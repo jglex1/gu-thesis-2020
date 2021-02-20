@@ -3,10 +3,12 @@ This repository contains the code relating to the honours thesis written by Alex
 
 ### Requirements
 
+* It is recommended to use the Anaconda distribution of Python as it comes with several handy features including Spyder and is tailored for data science, you can download it here: https://www.anaconda.com/products/individual.
+* It is recommended (and generally good programming practice) to develop the code for this project in a seperate environment, furthermore, a list of requirements, `requirements.txt` outlines the packages which I have installed in the working version of my code.
+ 
+To create an environment using these requirements, in the Anaconda terminal (search for this after installed), type:
 
-It is recommended (and generally good programming practice) to develop the code for this project in a seperate environment.
-
-
+`conda create --name <env> --file requirements.txt`
 
 
 ### Overview
