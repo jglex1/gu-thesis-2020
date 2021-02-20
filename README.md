@@ -10,6 +10,18 @@ To create an environment using these requirements, in the Anaconda terminal (sea
 
 `conda create --name <env> --file requirements.txt`
 
+**NOTE**
+
+* Ensure that `requirements.txt` is in the same directory as the Anaconda terminal working directory
+* Replace `<env>` with the desired name of your environment, this can be of your choosing
+
+**To launch the environment:**
+Every time you want to launch the environment,
+
+* Open Anaconda terminal
+* `conda activate <env>` to activate the environment
+* `spyder` to launch Spyder (note: may need to `conda install spyder` if Spyder hasn't been installed in this environment)
+
 
 ### Overview
 
