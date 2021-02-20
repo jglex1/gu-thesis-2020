@@ -1,38 +1,27 @@
 """
-Author: Alex GU (44287207)
+Author: Alex GU
 Date: Mon Aug  3 2020
-
-# --- Modifications / Revisions --- #
-+ [Aug 3 2020] Created to replace the deprecated feature importance module
-  from semester 1. This is a greatly simplified version, retaining only the
-  essential elements of the code.
-- [Aug 3 2020] Removed LaTeX text rendering 
-+ [Aug 12 2020] Added Random Forest Regressor functionality, RF classifier 
-  remains but may be deprecated in future versions.
-- [Aug 27 2020] Deprecated random forest classifer.
-+ [Aug 27 2020] Refined graphing of feature importance code and added averging
-  method to ensure feature importance results are more accurate.
 
 # --- Description --- #
 Determines feature importance using RF regression.
 """
 
-#import seaborn as sns
+import seaborn as sns
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn import metrics
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
 from tqdm import tqdm
 
-
+# Save generated images?
 SAVEIMG = False
 
 # LaTeX rendering, pgf fonts False
 # Sets matplotlib settings for LaTeX export
-LATEX_RENDER = True
+# WARNING: Requires MikTeX installed
+LATEX_RENDER = False
 
 if LATEX_RENDER == True: plt.rcParams.update({
     'font.family': 'serif',
@@ -42,9 +31,7 @@ if LATEX_RENDER == True: plt.rcParams.update({
     })
 
 
-# Make sure to set what dataset is being used
-dataset = '../datasets_generated/db-sem2-norm-v2_8_27.csv'
-culled_dataset = '../datasets_generated/db-sem2-culled-norm-v2_10_6.csv'
+# ------------------------------ FUNCTIONS ---------------------------------- #
 
 
 def impurity_feature_importance(rf, norm=True):
@@ -146,6 +133,8 @@ def kde_plot(selection, X, results_norm):
     data = results_norm[:,name_idx]
     sns.kdeplot(data, bw=.2, label=selection)
     sns.rugplot(data)
+    plt.xlabel("Importance")
+    plt.title('Distribution of "{}" importance over {} iterations'.format(selection, len(results_norm)))
     plt.xlim(0, 1)    
     plt.show()
 
@@ -260,28 +249,28 @@ def plot_box_plot(X, results_norm):
 
 if __name__ == '__main__':
         
-    ##### PARAMETERS TO CHANGE #####
+    # Dataset dir
+    DATASET         = 'datasets_generated/testdb-norm.csv'
+    CULLED_DATASET  = 'datasets_generated/testdb-norm-culled.csv'
     
-    DATASET_ACTIVE = culled_dataset         # dataset vs. culled_dataset
-    DATASET_ACTIVE_NAME =   'dataset'
+    # Dataset for analysis
+    DATASET_ACTIVE = CULLED_DATASET
     RANDOM_NUMBER = False 
-    IMG_PATH_MOD = "images\\feature-imp\\{}\\rn-{}".format(
-        DATASET_ACTIVE_NAME, str(RANDOM_NUMBER))
     
-    # Load dataset
+    # Image save file dir
+    IMG_PATH_MOD = "images\\feature-imp\\"
+    
+    
+    # ------------------------------ Main ----------------------------------- #
+    
+    
     df = pd.read_csv(DATASET_ACTIVE)
-    
+
+    # Seperate data and labels, handle incl. of random number
+    X = df.drop(['Formation energy [eV/atom]','Band gap [eV]'],axis=1)
+    Y = df['Formation energy [eV/atom]']
     if RANDOM_NUMBER == True:
-    # Random number
-        X = df.drop(['Formation energy [eV/atom]','Band gap [eV]'],axis=1)
-        X['Random Number [0,1]'] = np.random.random_sample(X.shape[0])
-        Y = df['Formation energy [eV/atom]']
-        
-    else:
-    # No random number
-        X = df.drop(['Formation energy [eV/atom]','Band gap [eV]'],axis=1)
-        Y = df['Formation energy [eV/atom]']
-    
+        X['Random Number [0,1]'] = np.random.random_sample(X.shape[0])    
 
     # Split data
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3)

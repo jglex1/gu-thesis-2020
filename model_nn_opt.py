@@ -5,9 +5,16 @@ Date: Wed Oct 14 2020
 Optimise Neural Network
 """
 
-from model_pytorch_nn import train_validate_test_split,\
-    training_loop, plot_predicted_vs_actual
 
+#
+# Note this code could take several MINUTES to complete or even HOURS depending
+# on the number of variables must be looped over. To make it run quicker, try
+# reducing the number of parameters, e.g. activation functions, network architectures,
+# learning rates, patience for early stopping, etc.
+#
+
+
+from model_nn import train_validate_test_split, training_loop, plot_predicted_vs_actual
 import pandas as pd
 from torch import nn, optim
 from tqdm import tqdm
@@ -20,14 +27,14 @@ def permute_act_fcn_models():
     
     for fcn in activation_fcns:
         
-        '''
+        
         # [64-50-1]
         MODEL = nn.Sequential(
             nn.Linear(64,50),
             fcn(),
             nn.Linear(50,1),
             fcn()).double()
-        '''
+        
         
         '''
         # [64-50-50-50-1]
@@ -42,6 +49,8 @@ def permute_act_fcn_models():
             fcn()).double()
         
         '''
+        
+        '''
         # [64-100-100-1]
         MODEL = nn.Sequential(
             nn.Linear(64,50),
@@ -50,7 +59,7 @@ def permute_act_fcn_models():
             fcn(),
             nn.Linear(50,1),
             fcn()).double()
-        
+        '''
         
         # Append all models to list
         models.append(MODEL)
@@ -60,9 +69,12 @@ def permute_act_fcn_models():
 
 if __name__ == '__main__':
     
-    # Select dataset
-    dataset_path = "../datasets_generated/db-sem2-norm-v2_8_27-modified.csv"
+    # 1. Select dataset
+    dataset_path = 'datasets_generated/testdb-norm.csv'
     df = pd.read_csv(dataset_path)
+    df_end = df["Formation energy [eV/atom]"]
+    df = df.drop(["Formation energy [eV/atom]", 'Band gap [eV]'], axis=1)
+    df["Formation energy [eV/atom]"] = df_end
     
     # Split df into train-validation-test DataLoader objects
     train_set, val_set, test_set, atom_datasets = train_validate_test_split(df, [0.2, 0.2]) # 0.2 test, 0.2 val
@@ -71,8 +83,8 @@ if __name__ == '__main__':
     learning_rate_sweep = [0.001]
     model_sweep         = permute_act_fcn_models()
     loss_critera_sweep  = [nn.MSELoss()]
-    optimiser_sweep     = [optim.SGD] # optim.Adam
-    scheduler_sweep     = [optim.lr_scheduler.ReduceLROnPlateau] # None, 
+    optimiser_sweep     = [optim.SGD] # Could also include: optim.Adam
+    scheduler_sweep     = [optim.lr_scheduler.ReduceLROnPlateau] # Also: None, 
     
     records = []
     possible_combinations = []

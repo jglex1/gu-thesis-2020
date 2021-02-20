@@ -15,11 +15,13 @@ from sklearn import svm
 from sklearn.model_selection import train_test_split, GridSearchCV
 
 
+# Save generated images?
 SAVEIMG = False
 
 # LaTeX rendering, pgf fonts False
 # Sets matplotlib settings for LaTeX export
-LATEX_RENDER = True
+# WARNING: Requires MikTeX installed
+LATEX_RENDER = False
 
 if LATEX_RENDER == True: plt.rcParams.update({
     'font.family': 'serif',
@@ -134,34 +136,34 @@ def search(param_grid, X_train, Y_train):
     return regr_gs
 
 
-# DATA
-dataset = '../datasets_generated/db-sem2-norm-v2_8_27.csv'
-culled_dataset = '../datasets_generated/db-sem2-culled-norm-v2_10_6.csv'
+if __name__ == "__main__":
 
-# Data
-df = pd.read_csv(culled_dataset)
-X = df.drop(['Formation energy [eV/atom]','Band gap [eV]'],axis=1)
-Y = df['Formation energy [eV/atom]']
+    # Dataset dir
+    DATASET         = 'datasets_generated/testdb-norm.csv'
+    CULLED_DATASET  = 'datasets_generated/testdb-norm-culled.csv'
 
-# Split into train and test data
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
-
-# Search space
-c_list = np.logspace(0,3,40)
-#gamma_list = np.logspace(0,-3,60) # 70 
-gamma_list = [0.22]
-param_grid_rbf=[{'C': c_list,
-            'gamma': gamma_list,
-            'kernel':['rbf']}]
-
-regr_gs = search(param_grid_rbf, X_train, Y_train)
-
-# 3D plotting
-# z = get_results_matrix(regr_gs, c_list, gamma_list)
-# X, Y, Z = plot3d(c_list, gamma_list, z)
-# X, Y, Z = plot3d(c_list, gamma_list, z, wire=True)
-
-#plot2d(regr_gs)
-
-# Return best parameters
-print(regr_gs.best_params_)
+    # Data
+    df = pd.read_csv(CULLED_DATASET)
+    X = df.drop(['Formation energy [eV/atom]','Band gap [eV]'],axis=1)
+    Y = df['Formation energy [eV/atom]']
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+    
+    # Search space
+    c_list = np.logspace(0,3,40)
+    gamma_list = np.logspace(0,-3,60) # 70 
+    #gamma_list = [0.22]
+    param_grid_rbf=[{'C': c_list,
+                'gamma': gamma_list,
+                'kernel':['rbf']}]
+    
+    regr_gs = search(param_grid_rbf, X_train, Y_train)
+    
+    # 3D plotting
+    z = get_results_matrix(regr_gs, c_list, gamma_list)
+    X, Y, Z = plot3d(c_list, gamma_list, z)
+    X, Y, Z = plot3d(c_list, gamma_list, z, wire=True)
+    
+    #plot2d(regr_gs)
+    
+    # Return best parameters
+    print(regr_gs.best_params_)

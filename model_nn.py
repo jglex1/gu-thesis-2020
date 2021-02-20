@@ -5,7 +5,6 @@ Date: Thu Oct 1
 PyTorch implementation of Neural Network.
 """
 
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -17,6 +16,9 @@ from pytorch_early_stopping import EarlyStopping
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 
+
+
+# ------------------------------ FUNCTIONS ---------------------------------- #
 
 
 class AtomDataset(Dataset):
@@ -216,14 +218,21 @@ def visualise_loss(train_loss_list, val_loss_list):
     
     plt.tight_layout()
     plt.show()
+    
+    
+
+# -------------------------------- MAIN ------------------------------------- #
 
 
 if __name__ == '__main__':
     
     
     # 1. Select dataset
-    dataset_path = "../datasets_generated/db-sem2-norm-v2_8_27-modified.csv"
+    dataset_path = 'datasets_generated/testdb-norm.csv'
     df = pd.read_csv(dataset_path)
+    df_end = df["Formation energy [eV/atom]"]
+    df = df.drop(["Formation energy [eV/atom]", 'Band gap [eV]'], axis=1)
+    df["Formation energy [eV/atom]"] = df_end
     
     # 2. Split df into train-validation-test DataLoader objects
     train_set, val_set, test_set, atom_datasets = train_validate_test_split(df, [0.2, 0.2]) # 0.2 test, 0.2 val
@@ -257,7 +266,7 @@ if __name__ == '__main__':
     
     # 5. Plot
     test_r2, train_r2 = plot_predicted_vs_actual(MODEL, atom_datasets)
-    #plot_predicted_vs_actual(MODEL, atom_datasets, NORM=False, plot_true=True)
+    plot_predicted_vs_actual(MODEL, atom_datasets, NORM=False, plot_true=True)
     
     # 6. Visualise loss
     visualise_loss(losses["train"], losses["validation"])

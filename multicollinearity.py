@@ -26,23 +26,24 @@ if LATEX_RENDER == True: plt.rcParams.update({
     })
 
 
-# Make sure to set what dataset is being used
-dataset = '../datasets_generated/db-sem2-norm-v2_8_27.csv'
-culled_dataset = '../datasets_generated/db-sem2-culled-norm-v1_8_27.csv'
-DATASET_ACTIVE = dataset
-
-
 
 def correlation_heatmap(df):
     correlations = df.corr()
 
     fig, ax = plt.subplots(figsize=(10,10))
     sns.heatmap(correlations, vmax=1.0, center=0, fmt='.2f',
-                square=True, linewidths=.5, annot=True, cbar_kws={"shrink": .70})
+                square=True, linewidths=.5, cbar_kws={"shrink": .70}) # annot=True
     plt.show()
 
 
+
 if __name__ == '__main__':
+    
+    
+    # Make sure to set what dataset is being used
+    DATASET         = 'datasets_generated/testdb-norm.csv'
+    CULLED_DATASET  = 'datasets_generated/testdb-norm-culled.csv'
+    DATASET_ACTIVE = DATASET
     
     df = pd.read_csv(DATASET_ACTIVE)
     correlation_heatmap(df)
