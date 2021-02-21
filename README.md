@@ -24,13 +24,13 @@ To create an environment using these requirements, in the Anaconda terminal (sea
 
 ## Overview
 
-* `data_preprocessing.py` A module to prepare the dataset for analysis, mainly handles the combination of the 
-* `feature_importances.py`
-* `model_svm.py`
-* `model_svm_hyperparameter_opt.py`
-* `model_nn.py`
-* `model_nn_opt.py`
-* `multicollinearity.py`
-* `pytorch_early_stopping.py`
+* `data_preprocessing.py` prepares the dataset for analysis, mainly handles the combination of the provided dataset and the mendeleev dataset (from the mendeleev Python package, note: this isn't supported in Python 3.8+). I recommend performing some data preprocessing as part of your pipeline to make it easier to see the effect of changing normalisation methods, etc. The way I currently have this implemented is not optimal.
+* `feature_importances.py` calculates the feature importances using impurity-based importance and permutation-based importance and graphs the results. Note that there are ways of computing "importance".
+* `model_svm.py` contains the code relating to the support vector machine regression.
+* `model_svm_hyperparameter_opt.py` contains the code relating to tuning the hyperparameters of the support vector machine algorithm, note: there are other hyperparameters to tune aside from the ones included here.
+* `model_nn.py` contains the code to implement a neural network in Pytorch.
+* `model_nn_opt.py` contains the code which performs a grid search over the possible parameters of the neural network, e.g. learning rate, optimisation method, etc.
+* `multicollinearity.py` contains some code to examine the correlations of the input features, note: there is considerably more "exploratory data analysis" which could be done other than a correlation heatmap.
+* `pytorch_early_stopping.py` implements the early stopping method for the neural network. This code is written by "Bjarten" (link to original inside file) and used freely under the MIT License.
 
 
