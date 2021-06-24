@@ -103,10 +103,29 @@ class Data():
         
         df = self._df
         scalers = []
+        
+        # For each group of features, e.g. ['Valence A', 'Valence B']
         for group in lst:
+            
+            # Flattens df['Valence A'] and df['Valence B'] into 1d data
+            # and fits the Scaler to this (btw can try other scalers like
+            # StandardScaler - I didn't have to time to iterate and see what
+            # was best)
             scaler = MinMaxScaler().fit(df[group].values.reshape(-1, 1))
+            
+            # Appends it (not used later, but just in case I wanted access to
+            # the scaler data... so kinda not important)
             scalers.append(scaler)
-            df[group] = scaler.transform(df[group])
+            
+            # Transforms the group of data based on the scaler, in my testing
+            # it works on groups of data, so I'm unsure of why you're getting an
+            # error.
+            
+            # df[group] = scaler.transform(df[group])
+            
+            # Replace with this,
+            for feature in group:
+                df[feature] = scaler.transform(df[feature].values.reshape(-1, 1))
         
         self._norm_scalers = scalers
         self._df = df
